@@ -1,0 +1,6 @@
+.terraform
+tbot-data
+terraform-identity
+*.pem
+*.tfstate*
+letsencrypt/

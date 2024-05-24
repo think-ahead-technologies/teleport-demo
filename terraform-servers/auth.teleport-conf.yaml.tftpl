@@ -1,0 +1,27 @@
+version: v3
+teleport:
+  nodename: scw-teleport-onprem-auth-1
+  data_dir: /var/lib/teleport
+  log:
+    output: stderr
+    severity: INFO
+    format:
+      output: text
+  ca_pin: ""
+  diag_addr: ""
+auth_service:
+  enabled: "yes"
+  cluster_name: teleport.thinkahead.dev
+  listen_addr: 0.0.0.0:3025
+  tokens:
+    - "proxy,node:ewqnjenqwirfbewqhfbqwpigrwn321312"
+  license_file: /etc/teleport-license.pem
+  proxy_listener_mode: multiplex
+ssh_service:
+  enabled: "yes"
+  commands:
+  - name: hostname
+    command: [hostname]
+    period: 1m0s
+proxy_service:
+  enabled: "no"

@@ -1,0 +1,37 @@
+version: v3
+
+# See https://goteleport.com/docs/reference/config/
+
+teleport:
+  nodename: scw-teleport-onprem-proxy-1
+  auth_server: ${auth_server_ip}:3025
+  auth_token: ewqnjenqwirfbewqhfbqwpigrwn321312
+  data_dir: /var/lib/teleport
+  log:
+    output: stderr
+    severity: INFO
+    format:
+      output: text
+  ca_pin: ""
+  diag_addr: ""
+auth_service:
+  enabled: "no"
+ssh_service:
+  enabled: "yes"
+  commands:
+  - name: hostname
+    command: [hostname]
+    period: 1m0s
+proxy_service:
+  enabled: "yes"
+  web_listen_addr: 0.0.0.0:3080
+  public_addr: teleport.thinkahead.dev
+  ssh_public_addr: teleport.thinkahead.dev
+  tunnel_public_addr: teleport.thinkahead.dev
+  proxy_protocol: on
+  https_keypairs:
+    - key_file: /etc/letsencrypt-key.pem
+      cert_file: /etc/letsencrypt-cert.pem
+    - key_file: /etc/letsencrypt-key-tld.pem
+      cert_file: /etc/letsencrypt-cert-tld.pem
+  https_keypairs_reload_interval: 0s
