@@ -11,6 +11,10 @@ variable "SCW_DEFAULT_PROJECT_ID" {
   type = string
 }
 
+variable "SCW_DEFAULT_ORGANISATION_ID" {
+  type = string
+}
+
 variable "TAGS" {
   type = list(string)
   default = [
@@ -26,7 +30,7 @@ variable "TELEPORT_EDITION" {
 
 variable "TELEPORT_VERSION" {
   type    = string
-  default = "15.3.1"
+  default = "15.3.6"
 }
 
 variable "SSH_KEYFILE" {

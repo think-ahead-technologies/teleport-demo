@@ -18,6 +18,7 @@ auth_service:
   license_file: /etc/teleport-license.pem
   proxy_listener_mode: multiplex
 ssh_service:
+  listen_addr: 0.0.0.0:3022
   enabled: "yes"
   commands:
   - name: hostname
