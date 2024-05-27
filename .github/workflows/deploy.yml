@@ -32,12 +32,13 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - run: echo ${{ secrets.SSH_PRIVATE_KEY }} | base64 --decode >~/.ssh/id_ed25519
-      - run: echo ${{ secrets.LICENCE }} | base64 --decode >licence.pem
-      - run: echo ${{ secrets.DOMAIN_CERT }} | base64 --decode >fullchain.pem
-      - run: echo ${{ secrets.DOMAIN_KEY }} | base64 --decode >privkey.pem
-      - run: echo ${{ secrets.TLD_CERT }} | base64 --decode >tld-fullchain.pem
-      - run: echo ${{ secrets.TLD_KEY }} | base64 --decode >tld-privkey.pem
+      - name: Add SSH private key
+        run: mkdir ~/.ssh && echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode >~/.ssh/id_ed25519
+      - run: echo "${{ secrets.LICENCE }}" | base64 --decode >licence.pem
+      - run: echo "${{ secrets.DOMAIN_CERT }}" | base64 --decode >fullchain.pem
+      - run: echo "${{ secrets.DOMAIN_KEY }}" | base64 --decode >privkey.pem
+      - run: echo "${{ secrets.TLD_CERT }}" | base64 --decode >tld-fullchain.pem
+      - run: echo "${{ secrets.TLD_KEY }}" | base64 --decode >tld-privkey.pem
 
       - run: terraform init
 
