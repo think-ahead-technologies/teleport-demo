@@ -14,8 +14,8 @@ variable "SCW_DEFAULT_PROJECT_ID" {
 variable "TAGS" {
   type = list(string)
   default = [
-    "terraform-instance",
-    "teleport-on-prem"
+    "terraform-managed",
+    "teleport-demo"
   ]
 }
 
@@ -30,6 +30,6 @@ variable "TELEPORT_VERSION" {
 }
 
 variable "SSH_KEYFILE" {
-    type = string
-    default = "~/.ssh/id_ed25519"
+  type    = string
+  default = "~/.ssh/id_ed25519"
 }

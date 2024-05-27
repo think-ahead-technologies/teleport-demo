@@ -14,7 +14,7 @@ resource "scaleway_instance_server" "teleport-auth-1" {
   type  = "DEV1-M"
   image = "ubuntu_jammy"
   name  = "scw-teleport-onprem-auth-1"
-  tags = var.TAGS
+  tags  = var.TAGS
   ip_id = scaleway_instance_ip.temp_auth_ip_1.id
 }
 

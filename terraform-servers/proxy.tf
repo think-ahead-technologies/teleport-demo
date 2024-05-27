@@ -13,7 +13,7 @@ resource "scaleway_instance_server" "teleport-proxy-1" {
   type  = "DEV1-M"
   image = "ubuntu_jammy"
   name  = "scw-teleport-onprem-proxy-1"
-  tags = var.TAGS
+  tags  = var.TAGS
   ip_id = scaleway_instance_ip.public_ip_1.id
 }
 
@@ -35,22 +35,22 @@ resource "null_resource" "copy-teleport-conf-proxy" {
   }
 
   provisioner "file" {
-    content = file("fullchain.pem")
+    content     = file("fullchain.pem")
     destination = "/etc/letsencrypt-cert.pem"
   }
 
   provisioner "file" {
-    content = file("privkey.pem")
+    content     = file("privkey.pem")
     destination = "/etc/letsencrypt-key.pem"
   }
 
   provisioner "file" {
-    content = file("tld-fullchain.pem")
+    content     = file("tld-fullchain.pem")
     destination = "/etc/letsencrypt-cert-tld.pem"
   }
 
   provisioner "file" {
-    content = file("tld-privkey.pem")
+    content     = file("tld-privkey.pem")
     destination = "/etc/letsencrypt-key-tld.pem"
   }
 }

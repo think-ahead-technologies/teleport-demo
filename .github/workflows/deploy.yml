@@ -1,0 +1,50 @@
+name: Deploy demo
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+
+    #   - name: Setup minio
+    #     run: mc alias set scw $S3_HOSTNAME $TF_VAR_SCW_ACCESS_KEY $TF_VAR_SCW_SECRET_KEY
+        # mc cp provider.tf scw/think-ahead-teleport-demo-terraform-state/test.tf
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-24.04
+    env:
+        # For terraform provider access
+        AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+        # For terraform itself
+        TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+        TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+        TF_VAR_SCW_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+        S3_HOSTNAME: https://s3.fr-par.scw.cloud
+
+    defaults:
+      run:
+        working-directory: ./terraform-servers
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: echo ${{ secrets.SSH_PRIVATE_KEY }} | base64 --decode >~/.ssh/id_ed25519
+      - run: echo ${{ secrets.LICENCE }} | base64 --decode >licence.pem
+      - run: echo ${{ secrets.DOMAIN_CERT }} | base64 --decode >fullchain.pem
+      - run: echo ${{ secrets.DOMAIN_KEY }} | base64 --decode >privkey.pem
+      - run: echo ${{ secrets.TLD_CERT }} | base64 --decode >tld-fullchain.pem
+      - run: echo ${{ secrets.TLD_KEY }} | base64 --decode >tld-privkey.pem
+
+      - run: terraform init
+
+      - run: terraform validate
+
+      - run: terraform fmt -recursive -check
+
+      - run: terraform plan -out=plan.tfplan
+
+      - run: terraform apply plan.tfplan

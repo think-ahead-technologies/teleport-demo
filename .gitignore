@@ -4,3 +4,4 @@ terraform-identity
 *.pem
 *.tfstate*
 letsencrypt/
+*.tfplan

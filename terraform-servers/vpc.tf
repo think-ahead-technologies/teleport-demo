@@ -1,10 +1,10 @@
 
-resource scaleway_lb_ip proxy {}
+resource "scaleway_lb_ip" "proxy" {}
 
-resource scaleway_lb main {
-    ip_ids = [ scaleway_lb_ip.proxy.id ]
-    name = "teleport-proxy-lb"
-    type = "LB-S"
+resource "scaleway_lb" "main" {
+  ip_ids = [scaleway_lb_ip.proxy.id]
+  name   = "teleport-proxy-lb"
+  type   = "LB-S"
 }
 
 
@@ -21,7 +21,7 @@ resource "scaleway_lb_backend" "proxy" {
   forward_protocol = "tcp"
   forward_port     = "3080"
   proxy_protocol   = "v2"
-  server_ips = [ scaleway_instance_server.teleport-proxy-1.public_ip ]
+  server_ips       = [scaleway_instance_server.teleport-proxy-1.public_ip]
 }
 
 resource "scaleway_domain_record" "proxy" {
@@ -36,5 +36,5 @@ output "lb-dns" {
   value = "${scaleway_domain_record.proxy.name}.${scaleway_domain_record.proxy.dns_zone}"
 }
 output "lb-ip" {
-    value = scaleway_lb_ip.proxy.ip_address
+  value = scaleway_lb_ip.proxy.ip_address
 }
