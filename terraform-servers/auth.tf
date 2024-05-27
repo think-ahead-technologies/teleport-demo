@@ -38,6 +38,22 @@ resource "null_resource" "copy-teleport-conf-auth" {
     content     = file("license.pem")
     destination = "/etc/teleport-license.pem"
   }
+
+  provisioner "file" {
+    source      = "teleport"
+    destination = "/etc"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "while ! command -v tctl >/dev/null; do sleep 1; done",
+      "while [ ! -s /var/lib/teleport/host_uuid ]; do sleep 1; done",
+      "while ! tctl status >/dev/null; do sleep 1; done",
+      "tctl create /etc/teleport/terraform-role.yaml",
+      "tctl create /etc/teleport/bot.yaml",
+      "tctl create /etc/teleport/bot-token.yaml"
+    ]
+  }
 }
 
 output "auth-ip" {

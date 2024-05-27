@@ -25,7 +25,7 @@ ssh_service:
 proxy_service:
   enabled: "yes"
   web_listen_addr: 0.0.0.0:3080
-  public_addr: teleport.thinkahead.dev
+  public_addr: teleport.thinkahead.dev:443
   proxy_protocol: on
   https_keypairs:
     - key_file: /etc/letsencrypt-key.pem
