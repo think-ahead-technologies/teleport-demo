@@ -6,15 +6,18 @@ terraform {
   }
 
   backend "s3" {
-    bucket                      = "think-ahead-teleport-demo-terraform-state"
-    key                         = "prod.tfstate"
-    region                      = "fr-par"
-    endpoint                    = "https://s3.fr-par.scw.cloud"
+    bucket = "think-ahead-teleport-demo-terraform-state"
+    key    = "prod.tfstate"
+    region = "fr-par"
+    endpoints = {
+      s3 = "https://s3.fr-par.scw.cloud"
+    }
     skip_credentials_validation = true
     skip_region_validation      = true
+    skip_requesting_account_id  = true
   }
 
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.6.1"
 }
 
 provider "scaleway" {
