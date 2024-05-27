@@ -20,7 +20,7 @@ jobs:
         TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
         TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
 
-        TF_VAR_SCW_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+        TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
         S3_HOSTNAME: https://s3.fr-par.scw.cloud
 
     defaults:
@@ -32,13 +32,18 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Add SSH private key
+      - name: Set up SSH private key
         run: mkdir ~/.ssh && echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode >~/.ssh/id_ed25519
-      - run: echo "${{ secrets.LICENCE }}" | base64 --decode >licence.pem
-      - run: echo "${{ secrets.DOMAIN_CERT }}" | base64 --decode >fullchain.pem
-      - run: echo "${{ secrets.DOMAIN_KEY }}" | base64 --decode >privkey.pem
-      - run: echo "${{ secrets.TLD_CERT }}" | base64 --decode >tld-fullchain.pem
-      - run: echo "${{ secrets.TLD_KEY }}" | base64 --decode >tld-privkey.pem
+      - name: Set up license file
+        run: echo "${{ secrets.LICENCE }}" | base64 --decode >license.pem
+      - name: Set up certificate for domain
+        run: echo "${{ secrets.DOMAIN_CERT }}" | base64 --decode >fullchain.pem
+      - name: Set up private key for domain
+        run: echo "${{ secrets.DOMAIN_KEY }}" | base64 --decode >privkey.pem
+      - name: Set up certificate for TLD
+        run: echo "${{ secrets.TLD_CERT }}" | base64 --decode >tld-fullchain.pem
+      - name: Set up private key for TLD
+        run: echo "${{ secrets.TLD_KEY }}" | base64 --decode >tld-privkey.pem
 
       - run: terraform init
 
