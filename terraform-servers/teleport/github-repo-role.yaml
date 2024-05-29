@@ -1,6 +1,6 @@
 kind: role
 metadata:
-  name: terraform
+  name: github-repo
 spec:
   allow:
     db_labels:

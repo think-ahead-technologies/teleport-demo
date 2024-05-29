@@ -5,7 +5,7 @@ version: v3
 teleport:
   nodename: scw-teleport-onprem-proxy-1
   auth_server: ${auth_server_ip}:3025
-  auth_token: ewqnjenqwirfbewqhfbqwpigrwn321312
+  auth_token: highly-secure-example-token-987654321
   data_dir: /var/lib/teleport
   log:
     output: stderr
@@ -28,8 +28,8 @@ proxy_service:
   public_addr: teleport.thinkahead.dev:443
   proxy_protocol: on
   https_keypairs:
-    - key_file: /etc/letsencrypt-key.pem
-      cert_file: /etc/letsencrypt-cert.pem
-    - key_file: /etc/letsencrypt-key-tld.pem
-      cert_file: /etc/letsencrypt-cert-tld.pem
+    - key_file: /etc/teleport-letsencrypt-key.pem
+      cert_file: /etc/teleport-letsencrypt-cert.pem
+    - key_file: /etc/teleport-letsencrypt-key-tld.pem
+      cert_file: /etc/teleport-letsencrypt-cert-tld.pem
   https_keypairs_reload_interval: 0s

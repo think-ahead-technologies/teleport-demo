@@ -11,7 +11,7 @@ resource "scaleway_instance_user_data" "auth" {
 }
 
 resource "scaleway_instance_server" "teleport-auth-1" {
-  type  = "DEV1-M"
+  type  = "DEV1-L"
   image = "ubuntu_jammy"
   name  = "scw-teleport-onprem-auth-1"
   tags  = var.TAGS
@@ -28,6 +28,11 @@ resource "null_resource" "copy-teleport-conf-auth" {
   }
 
   provisioner "file" {
+    source      = "teleport"
+    destination = "/etc"
+  }
+
+  provisioner "file" {
     content = templatefile("auth.teleport-conf.yaml.tftpl", {
       proxy_server_ip = scaleway_instance_server.teleport-proxy-1.public_ip
     })
@@ -36,12 +41,7 @@ resource "null_resource" "copy-teleport-conf-auth" {
 
   provisioner "file" {
     content     = file("license.pem")
-    destination = "/etc/teleport-license.pem"
-  }
-
-  provisioner "file" {
-    source      = "teleport"
-    destination = "/etc"
+    destination = "/etc/teleport/license.pem"
   }
 
   provisioner "remote-exec" {
@@ -49,7 +49,7 @@ resource "null_resource" "copy-teleport-conf-auth" {
       "while ! command -v tctl >/dev/null; do sleep 1; done",
       "while [ ! -s /var/lib/teleport/host_uuid ]; do sleep 1; done",
       "while ! tctl status >/dev/null; do sleep 1; done",
-      "tctl create /etc/teleport/terraform-role.yaml",
+      "tctl create /etc/teleport/github-repo-role.yaml",
       "tctl create /etc/teleport/bot.yaml",
       "tctl create /etc/teleport/bot-token.yaml"
     ]

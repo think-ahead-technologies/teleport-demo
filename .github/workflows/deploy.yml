@@ -53,8 +53,8 @@ jobs:
       - run: terraform apply plan.tfplan
 
 
-  setup-role:
-    name: Setup roles
+  setup-saml:
+    name: Setup SAML
     needs: Deploy
     permissions:
         # The "id-token: write" permission is required or Machine ID will not be
@@ -83,7 +83,7 @@ jobs:
               exit 0
             fi
             echo "Server currently unavailable. Retrying..."
-            sleep 2
+            sleep 3
           done
           echo "Server unable to process authentication using Machine ID" >&2
           exit 1

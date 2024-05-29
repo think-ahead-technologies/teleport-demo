@@ -36,22 +36,22 @@ resource "null_resource" "copy-teleport-conf-proxy" {
 
   provisioner "file" {
     content     = file("fullchain.pem")
-    destination = "/etc/letsencrypt-cert.pem"
+    destination = "/etc/teleport-letsencrypt-cert.pem"
   }
 
   provisioner "file" {
     content     = file("privkey.pem")
-    destination = "/etc/letsencrypt-key.pem"
+    destination = "/etc/teleport-letsencrypt-key.pem"
   }
 
   provisioner "file" {
     content     = file("tld-fullchain.pem")
-    destination = "/etc/letsencrypt-cert-tld.pem"
+    destination = "/etc/teleport-letsencrypt-cert-tld.pem"
   }
 
   provisioner "file" {
     content     = file("tld-privkey.pem")
-    destination = "/etc/letsencrypt-key-tld.pem"
+    destination = "/etc/teleport-letsencrypt-key-tld.pem"
   }
 }
 

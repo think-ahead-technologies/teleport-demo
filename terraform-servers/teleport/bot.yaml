@@ -4,4 +4,4 @@ metadata:
   # name is a unique identifier for the Bot in the cluster.
   name: teleport-demo-repo-bot
 spec:
-  roles: [terraform]
+  roles: [github-repo]
