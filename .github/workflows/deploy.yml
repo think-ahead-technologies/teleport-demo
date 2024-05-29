@@ -19,6 +19,7 @@ jobs:
         TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
         TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
         S3_HOSTNAME: https://s3.fr-par.scw.cloud
+
     defaults:
       run:
         working-directory: ./terraform-servers
@@ -53,35 +54,51 @@ jobs:
 
 
   setup-role:
-        name: Setup roles
-        needs: Deploy
-        permissions:
-          # The "id-token: write" permission is required or Machine ID will not be
-          # able to authenticate with the cluster.
-          id-token: write
-          contents: read
-        runs-on: ubuntu-24.04
-        defaults:
-          run:
-            working-directory: ./terraform-servers
-        steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-        - name: Fetch Teleport binaries
-          uses: teleport-actions/setup@v1
-          with:
-            version: 15.3.7
-        - name: Fetch credentials using Machine ID
-          id: auth
-          uses: teleport-actions/auth@v2
-          with:
-            # Use the address of the auth/proxy server for your own cluster.
-            proxy: teleport.thinkahead.dev:443
-            # Use the name of the join token resource you created in step 1.
-            token: teleport-demo-repo-bot-token
-            # Specify the length of time that the generated credentials should be
-            # valid for. This is optional and defaults to "1h"
-            certificate-ttl: 1h
+    name: Setup roles
+    needs: Deploy
+    permissions:
+        # The "id-token: write" permission is required or Machine ID will not be
+        # able to authenticate with the cluster.
+        id-token: write
+        contents: read
+    runs-on: ubuntu-24.04
+    env:
+        TELEPORT_PROXY_ADDR: teleport.thinkahead.dev:443
+    defaults:
+        run:
+          working-directory: ./terraform-servers
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        - name: Set up Microsoft Active Directory access
-          run: tctl create -f azure-connector.yaml
+      - name: Fetch Teleport binaries
+        uses: teleport-actions/setup@v1
+        with:
+          version: 15.3.7
+
+      - name: Wait for server to be able to process authentication
+        run: |
+          for i in $(seq 1 30); do
+            if [ "$(curl -X POST https://${TELEPORT_PROXY_ADDR}/v1/webapi/host/credentials -s -o /dev/null -w "%{http_code}")" != "000" ]; then
+              exit 0
+            fi
+            echo "Server currently unavailable. Retrying..."
+            sleep 2
+          done
+          echo "Server unable to process authentication using Machine ID" >&2
+          exit 1
+
+      - name: Fetch credentials using Machine ID
+        id: auth
+        uses: teleport-actions/auth@v2
+        with:
+          # Use the address of the auth/proxy server for your own cluster.
+          proxy: ${{ env.TELEPORT_PROXY_ADDR }}
+          # Use the name of the join token resource you created in step 1.
+          token: teleport-demo-repo-bot-token
+          # Specify the length of time that the generated credentials should be
+          # valid for. This is optional and defaults to "1h"
+          certificate-ttl: 1h
+
+      - name: Set up Microsoft Active Directory access
+        run: tctl create -f azure-connector.yaml

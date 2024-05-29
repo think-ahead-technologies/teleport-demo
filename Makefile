@@ -13,11 +13,3 @@ destroy-deploy:
 	cd terraform-servers && terraform destroy
 destroy-deploy-force:
 	cd terraform-servers && terraform destroy -auto-approve
-
-
-
-configure:
-	cd terraform-teleport && terraform apply
-
-configure-init:
-	cd terraform-teleport && terraform init
