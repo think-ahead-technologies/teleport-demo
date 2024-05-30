@@ -13,3 +13,6 @@ destroy-deploy:
 	cd terraform-servers && terraform destroy
 destroy-deploy-force:
 	cd terraform-servers && terraform destroy -auto-approve
+
+update-config:
+	./terraform-servers/update-conf.sh
