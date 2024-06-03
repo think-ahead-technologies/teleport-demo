@@ -12,7 +12,7 @@ resource "scaleway_instance_user_data" "proxy" {
 resource "scaleway_instance_server" "teleport-proxy-1" {
   type  = "DEV1-M"
   image = "ubuntu_jammy"
-  name  = "scw-teleport-onprem-proxy-1"
+  name  = "scw-teleport-demo-proxy"
   tags  = var.TAGS
   ip_id = scaleway_instance_ip.public_ip_1.id
 }

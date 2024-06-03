@@ -13,7 +13,7 @@ resource "scaleway_instance_user_data" "auth" {
 resource "scaleway_instance_server" "teleport-auth-1" {
   type  = "DEV1-L"
   image = "ubuntu_jammy"
-  name  = "scw-teleport-onprem-auth-1"
+  name  = "scw-teleport-demo-auth"
   tags  = var.TAGS
   ip_id = scaleway_instance_ip.temp_auth_ip_1.id
 }
@@ -34,6 +34,7 @@ resource "null_resource" "copy-teleport-conf-auth" {
 
   provisioner "file" {
     content = templatefile("auth.teleport-conf.yaml.tftpl", {
+      auth_server_ip  = scaleway_instance_server.teleport-auth-1.public_ip,
       proxy_server_ip = scaleway_instance_server.teleport-proxy-1.public_ip
     })
     destination = "/etc/teleport.yaml"

@@ -23,10 +23,10 @@ export auth_server_ip=$(cat $AUTH_IP_FILE)
 envsubst <proxy.teleport-conf.yaml.tftpl >proxy.teleport-conf.yaml.tmp
 envsubst <auth.teleport-conf.yaml.tftpl >auth.teleport-conf.yaml.tmp
 
-echo "Copying config file to proxy machine..." >&2
+echo "Copying config file to proxy machine on $proxy_server_ip..." >&2
 scp -o ConnectTimeout=$SSH_TIMEOUT proxy.teleport-conf.yaml.tmp $REMOTE_USER@$proxy_server_ip:/etc/teleport.yaml \
     || (rm $PROXY_IP_FILE && false)
-echo "Copying config file to auth server..." >&2
+echo "Copying config file to auth server on $auth_server_ip..." >&2
 scp -o ConnectTimeout=$SSH_TIMEOUT auth.teleport-conf.yaml.tmp $REMOTE_USER@$auth_server_ip:/etc/teleport.yaml \
     || (rm $AUTH_IP_FILE && false)
 

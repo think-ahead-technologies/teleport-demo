@@ -2,6 +2,6 @@ kind: bot
 version: v1
 metadata:
   # name is a unique identifier for the Bot in the cluster.
-  name: teleport-demo-repo-bot
+  name: teleport-demo-repo
 spec:
   roles: [github-repo]
