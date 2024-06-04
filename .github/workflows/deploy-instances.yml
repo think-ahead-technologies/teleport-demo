@@ -1,9 +1,9 @@
-name: Deploy demo
+name: Deploy Scaleway instances demo
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - main
+#   push:
+#     branches:
+#     - main
 
 jobs:
   Deploy:
@@ -22,7 +22,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./terraform-servers
+        working-directory: ./scaleway-instances
 
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
         TELEPORT_PROXY_ADDR: teleport.thinkahead.dev:443
     defaults:
         run:
-          working-directory: ./terraform-servers
+          working-directory: ./scaleway-instances
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

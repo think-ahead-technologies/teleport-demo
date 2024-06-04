@@ -6,3 +6,4 @@ terraform-identity
 letsencrypt/
 *.tfplan
 *.tmp
+kubeconfig*.yaml

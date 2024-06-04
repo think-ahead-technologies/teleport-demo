@@ -1,5 +1,5 @@
-
-# - Install certbot
+# To generate a Scaleway certificate:
+# - Install certbot on development machine
 # - Run:
 #     certbot certonly --manual --preferred-challenges dns -d "teleport.thinkahead.dev" --config-dir letsencrypt --work-dir letsencrypt --logs-dir letsencrypt --email teleport-on-prem@think-ahead.tech
 # - Then deploy this resource with the challenge provided by that command's output.

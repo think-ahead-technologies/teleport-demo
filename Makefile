@@ -1,18 +1,19 @@
+DEMO_DIR=scaleway-k8s
 
 deploy: deploy-init
-	cd terraform-servers && terraform apply
+	cd $(DEMO_DIR) && terraform apply
 deploy-force: deploy-init
-	cd terraform-servers && terraform apply -auto-approve
+	cd $(DEMO_DIR) && terraform apply -auto-approve
 
 deploy-init:
-	cd terraform-servers && terraform init
+	cd $(DEMO_DIR) && terraform init
 
 redeploy-servers: destroy-deploy-force deploy-force
 
 destroy-deploy:
-	cd terraform-servers && terraform destroy
+	cd $(DEMO_DIR) && terraform destroy
 destroy-deploy-force:
-	cd terraform-servers && terraform destroy -auto-approve
+	cd $(DEMO_DIR) && terraform destroy -auto-approve
 
 update-config:
-	./terraform-servers/update-conf.sh
+	./$(DEMO_DIR)/update-conf.sh

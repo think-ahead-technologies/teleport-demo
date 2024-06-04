@@ -1,4 +1,4 @@
-name: Destroy demo
+name: Destroy Scaleway instances demo
 on:
   workflow_dispatch:
 
@@ -18,7 +18,7 @@ jobs:
         S3_HOSTNAME: https://s3.fr-par.scw.cloud
     defaults:
       run:
-        working-directory: ./terraform-servers
+        working-directory: ./scaleway-instances
 
     steps:
       - uses: actions/checkout@v4

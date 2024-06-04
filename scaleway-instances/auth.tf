@@ -11,7 +11,7 @@ resource "scaleway_instance_user_data" "auth" {
 }
 
 resource "scaleway_instance_server" "teleport-auth-1" {
-  type  = "DEV1-L"
+  type  = "DEV1-M"
   image = "ubuntu_jammy"
   name  = "scw-teleport-demo-auth"
   tags  = var.TAGS
