@@ -3,12 +3,11 @@ terraform {
     scaleway = {
       source = "scaleway/scaleway"
     }
-    kubernetes = {}
   }
 
   backend "s3" {
     bucket = "think-ahead-teleport-demo-terraform-state"
-    key    = "scaleway-k8s.tfstate"
+    key    = "scaleway-k8s-cluster.tfstate"
     region = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"
@@ -27,18 +26,4 @@ provider "scaleway" {
   project_id = var.SCW_DEFAULT_PROJECT_ID
   zone       = "fr-par-2"
   region     = "fr-par"
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = local.kubeconfig.host
-    token                  = local.kubeconfig.token
-    cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
-  }
-}
-
-provider "kubernetes" {
-  host                   = local.kubeconfig.host
-  token                  = local.kubeconfig.token
-  cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
 }

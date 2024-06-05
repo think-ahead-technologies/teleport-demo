@@ -13,11 +13,15 @@ resource "helm_release" "cert-manager" {
   }
 }
 
+# TODO this fails because the CRD above is not available at `terraform plan` stage.
 resource "kubernetes_manifest" "cert-cluster-issuer" {
-  manifest = provider::kubernetes::manifest_decode(file("cert-cluster-issuer.yaml"))
+  depends_on = [helm_release.cert-manager]
+  count      = 0
+  manifest   = provider::kubernetes::manifest_decode(file("cert-cluster-issuer.yaml"))
 }
 
 resource "kubernetes_secret" "scaleway-credentials" {
+  depends_on = [helm_release.cert-manager]
   metadata {
     name      = "scaleway-credentials"
     namespace = "cert-manager"
@@ -30,6 +34,7 @@ resource "kubernetes_secret" "scaleway-credentials" {
 }
 
 resource "helm_release" "scaleway-certmanager-webhook" {
+  depends_on = [helm_release.cert-manager]
   name       = "scaleway-certmanager-webhook"
   namespace  = "cert-manager"
   repository = "https://helm.scw.cloud/"
