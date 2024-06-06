@@ -1,9 +1,20 @@
 terraform {
   required_providers {
+    flux = {
+      source  = "fluxcd/flux"
+      version = ">= 1.2"
+    }
+    github = {
+      source  = "integrations/github"
+      version = ">= 6.1"
+    }
+    kind = {
+      source  = "tehcyx/kind"
+      version = ">= 0.4"
+    }
     scaleway = {
       source = "scaleway/scaleway"
     }
-    kubernetes = {}
   }
 
   backend "s3" {
@@ -18,7 +29,7 @@ terraform {
     skip_requesting_account_id  = true
   }
 
-  required_version = ">= 1.6.1"
+  required_version = ">= 1.7.0"
 }
 
 provider "scaleway" {
@@ -29,12 +40,25 @@ provider "scaleway" {
   region     = "fr-par"
 }
 
-provider "helm" {
-  kubernetes {
+provider "flux" {
+  kubernetes = {
     host                   = local.kubeconfig.host
     token                  = local.kubeconfig.token
     cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
   }
+  git = {
+    url = "https://github.com/think-ahead-technologies/state"
+    http = {
+      username = "git" # This can be any string when using a personal access token
+      password = var.GITHUB_ACCESS_TOKEN
+    }
+  }
+}
+
+# TODO is this used?
+provider "github" {
+  owner = var.GITHUB_ORG
+  token = var.GITHUB_ACCESS_TOKEN
 }
 
 provider "kubernetes" {
