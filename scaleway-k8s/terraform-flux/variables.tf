@@ -16,15 +16,15 @@ variable "SCW_DEFAULT_ORGANISATION_ID" {
 }
 
 variable "GITHUB_ACCESS_TOKEN" {
-    type = string
+  type = string
 }
 
 variable "GITHUB_ORG" {
-    type = string
-    default = "think-ahead-technologies"
+  type    = string
+  default = "think-ahead-technologies"
 }
 
 variable "GITHUB_REPO" {
-    type = string
-    default = "state"
+  type    = string
+  default = "teleport-demo"
 }

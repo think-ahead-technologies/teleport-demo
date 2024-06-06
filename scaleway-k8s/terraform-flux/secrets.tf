@@ -1,7 +1,7 @@
 
 resource "kubernetes_namespace" "cert-manager" {
   metadata {
-    name = "teleport"
+    name = "cert-manager"
     labels = {
       "pod-security.kubernetes.io/enforce" = "baseline"
     }

@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: teleport
+  namespace: teleport
+spec:
+  chart:
+    spec:
+      version: "^15.0.0"
+  values:
+    # More info: https://github.dev/gravitational/teleport/blob/4160786a3e6fabd9b0dcd54354820b222a22535b/examples/chart/teleport-cluster/values.yaml
+    clusterName: teleport.thinkahead.dev
+    proxyProtocol: "off"
+    proxyListenerMode: multiplex
+    enterprise: true
+    highAvailability:
+      certManager:
+        enabled: true
+        issuerName: letsencrypt-prod
+        issuerKind: ClusterIssuer
+    ingress:
+      enabled: "true"
+      suppressAutomaticWildcards: true  # TODO doesn't appear to work
+      spec:
+        ingressClassName: nginx
+    service:
+      type: ClusterIP
+    annotations:
+      ingress:
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        external-dns.alpha.kubernetes.io/hostname: teleport.thinkahead.dev

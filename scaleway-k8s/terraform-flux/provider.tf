@@ -47,18 +47,12 @@ provider "flux" {
     cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
   }
   git = {
-    url = "https://github.com/think-ahead-technologies/state"
+    url = "https://github.com/think-ahead-technologies/teleport-demo"
     http = {
       username = "git" # This can be any string when using a personal access token
       password = var.GITHUB_ACCESS_TOKEN
     }
   }
-}
-
-# TODO is this used?
-provider "github" {
-  owner = var.GITHUB_ORG
-  token = var.GITHUB_ACCESS_TOKEN
 }
 
 provider "kubernetes" {

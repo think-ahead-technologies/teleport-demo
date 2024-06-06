@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: teleport-cluster
+  namespace: teleport
+spec:
+  releaseName: teleport-cluster
+  chart:
+    spec:
+      chart: teleport-cluster
+      sourceRef:
+        kind: HelmRepository
+        name: teleport
+  interval: 50m
+  install:
+    remediation:
+      retries: 3
+  values:
+    enterprise: true

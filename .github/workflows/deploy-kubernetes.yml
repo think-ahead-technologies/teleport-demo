@@ -1,0 +1,77 @@
+name: Deploy Scaleway Kubernetes demo
+on:
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+
+jobs:
+  Deploy-Cluster:
+    runs-on: ubuntu-24.04
+    env:
+      # For terraform provider access
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+      # For terraform itself
+      TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+      TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
+    defaults:
+      run:
+        working-directory: ./scaleway-k8s/terraform-cluster
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init
+
+      - run: terraform validate
+
+      - run: terraform fmt -recursive -check
+
+      - run: terraform plan -out=plan.tfplan
+
+      - run: terraform apply plan.tfplan
+
+  Deploy-Flux:
+    needs: [Deploy-Cluster]
+    runs-on: ubuntu-24.04
+    env:
+      # For terraform provider access
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+      # For terraform itself
+      TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+      TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+      TF_VAR_GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
+    defaults:
+      run:
+        working-directory: ./scaleway-k8s/terraform-flux
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Set up license file
+        run: echo "${{ secrets.LICENCE }}" | base64 --decode >license.pem
+
+      - run: terraform init
+
+      - run: terraform validate
+
+      - run: terraform fmt -recursive -check
+
+      - run: terraform plan -out=plan.tfplan
+
+      - run: terraform apply plan.tfplan
