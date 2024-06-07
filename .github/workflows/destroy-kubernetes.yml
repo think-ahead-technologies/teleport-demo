@@ -3,8 +3,64 @@ on:
   workflow_dispatch:
 
 jobs:
+  Destroy-Secrets:
+    runs-on: ubuntu-24.04
+    env:
+      # For terraform provider access
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+      # For terraform itself
+      TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+      TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+    defaults:
+      run:
+        working-directory: ./scaleway-k8s/terraform-secrets
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Set up license file
+        run: echo "${{ secrets.LICENCE }}" | base64 --decode >license.pem
+
+      - run: terraform init
+
+      - run: terraform destroy -auto-approve
+
+  Destroy-Flux:
+    needs: [ Destroy-Secrets ]
+    runs-on: ubuntu-24.04
+    env:
+      # For terraform provider access
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+      # For terraform itself
+      TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+      TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+      TF_VAR_GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+    defaults:
+      run:
+        working-directory: ./scaleway-k8s/terraform-flux
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init
+
+      - run: terraform destroy -auto-approve
 
   Destroy-Cluster:
+    needs: [ Destroy-Flux ]
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access

@@ -3,5 +3,4 @@ kind: Kustomization
 resources:
   - cert-manager.yaml
   - external-dns.yaml
-  - external-secrets.yaml
   - ingress-nginx.yaml

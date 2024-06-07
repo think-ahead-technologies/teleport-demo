@@ -23,8 +23,8 @@ spec:
             accessKeySecretRef:
               key: SCW_ACCESS_KEY
               name: scaleway-credentials
-              namespace: kube-system
+              namespace: cert-manager
             secretKeySecretRef:
               key: SCW_SECRET_KEY
               name: scaleway-credentials
-              namespace: kube-system
+              namespace: cert-manager

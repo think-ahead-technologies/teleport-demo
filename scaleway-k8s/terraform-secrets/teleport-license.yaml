@@ -1,0 +1,19 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+    name: teleport-license
+    namespace: teleport
+spec:
+    refreshInterval: 20s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: secret-store
+    target:
+        name: license
+        creationPolicy: Owner
+    data:
+      - secretKey: license.pem
+        remoteRef:
+          key: path:${license_secret_path}
+          version: latest_enabled
