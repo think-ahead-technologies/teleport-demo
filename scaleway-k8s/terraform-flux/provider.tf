@@ -8,9 +8,8 @@ terraform {
       source  = "integrations/github"
       version = ">= 6.1"
     }
-    kind = {
-      source  = "tehcyx/kind"
-      version = ">= 0.4"
+    helm = {
+      version = ">= 2.13"
     }
     scaleway = {
       source = "scaleway/scaleway"
@@ -59,4 +58,12 @@ provider "kubernetes" {
   host                   = local.kubeconfig.host
   token                  = local.kubeconfig.token
   cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = local.kubeconfig.host
+    token                  = local.kubeconfig.token
+    cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
+  }
 }

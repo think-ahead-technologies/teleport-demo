@@ -62,18 +62,3 @@ spec:
         envFrom:
         - secretRef:
             name: scaleway-credentials
-            namespace: cert-manager
-        ### Set if configuring using a config file. Make sure to create the Secret first.
-        # - name: SCW_PROFILE
-        #   value: "<profile name>"
-        # - name: SCW_CONFIG_PATH
-        #   value: /etc/scw/config.yaml
-    #     volumeMounts:
-    #     - name: scw-config
-    #       mountPath: /etc/scw/config.yaml
-    #       readOnly: true
-    # volumes:
-    # - name: scw-config
-    #   secret:
-    #     secretName: scw-config
-    ###

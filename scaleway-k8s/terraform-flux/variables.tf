@@ -15,6 +15,11 @@ variable "SCW_DEFAULT_ORGANISATION_ID" {
   type = string
 }
 
+variable "SCW_REGION" {
+  type    = string
+  default = "PAR"
+}
+
 variable "GITHUB_ACCESS_TOKEN" {
   type = string
 }

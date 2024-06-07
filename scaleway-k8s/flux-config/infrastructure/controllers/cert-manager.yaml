@@ -1,16 +1,9 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cert-manager
-  labels:
-    toolkit.fluxcd.io/tenant: sre-team
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: cert-manager
-  namespace: cert-manager
+  namespace: kube-system
 spec:
   interval: 24h
   url: https://charts.jetstack.io
@@ -19,7 +12,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cert-manager
-  namespace: cert-manager
+  namespace: kube-system
 spec:
   interval: 30m
   chart:
@@ -29,7 +22,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cert-manager
-        namespace: cert-manager
+        namespace: kube-system
       interval: 12h
   values:
     installCRDs: true
@@ -38,7 +31,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: scaleway
-  namespace: cert-manager
+  namespace: kube-system
 spec:
   interval: 24h
   url: https://helm.scw.cloud/
@@ -47,7 +40,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: scaleway-certmanager-webhook
-  namespace: cert-manager
+  namespace: kube-system
 spec:
   interval: 30m
   dependsOn:
@@ -59,5 +52,5 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: scaleway
-        namespace: cert-manager
+        namespace: kube-system
       interval: 12h
