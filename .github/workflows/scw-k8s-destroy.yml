@@ -1,4 +1,4 @@
-name: Destroy Scaleway Kubernetes demo
+name: "Scaleway Kubernetes demo: destroy"
 on:
   workflow_dispatch:
 

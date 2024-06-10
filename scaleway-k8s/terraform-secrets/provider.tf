@@ -1,16 +1,5 @@
 terraform {
   required_providers {
-    flux = {
-      source  = "fluxcd/flux"
-      version = ">= 1.2"
-    }
-    github = {
-      source  = "integrations/github"
-      version = ">= 6.1"
-    }
-    helm = {
-      version = ">= 2.13"
-    }
     scaleway = {
       source = "scaleway/scaleway"
     }
@@ -39,31 +28,23 @@ provider "scaleway" {
   region     = "fr-par"
 }
 
-provider "flux" {
-  kubernetes = {
-    host                   = local.kubeconfig.host
-    token                  = local.kubeconfig.token
-    cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
-  }
-  git = {
-    url = "https://github.com/think-ahead-technologies/teleport-demo"
-    http = {
-      username = "git" # This can be any string when using a personal access token
-      password = var.GITHUB_ACCESS_TOKEN
-    }
-  }
-}
-
 provider "kubernetes" {
   host                   = local.kubeconfig.host
   token                  = local.kubeconfig.token
   cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
 }
 
-provider "helm" {
-  kubernetes {
-    host                   = local.kubeconfig.host
-    token                  = local.kubeconfig.token
-    cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
-  }
+
+data "scaleway_secret" "kubeconfig" {
+  name = "teleport-kubernetes-kubeconfig"
+  path = "/teleport-demo/kubernetes/kubeconfig"
+}
+
+data "scaleway_secret_version" "kubeconfig" {
+  secret_id = data.scaleway_secret.kubeconfig.secret_id
+  revision  = "latest"
+}
+
+locals {
+  kubeconfig = jsondecode(base64decode(data.scaleway_secret_version.kubeconfig.data))
 }

@@ -19,13 +19,3 @@ variable "SCW_REGION" {
   type    = string
   default = "fr-par"
 }
-
-variable "GITHUB_ORG" {
-  type    = string
-  default = "think-ahead-technologies"
-}
-
-variable "GITHUB_REPO" {
-  type    = string
-  default = "teleport-demo"
-}

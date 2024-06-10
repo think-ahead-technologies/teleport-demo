@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: teleport
+  labels:
+      pod-security.kubernetes.io/enforce: baseline
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -15,5 +21,5 @@ spec:
     data:
       - secretKey: license.pem
         remoteRef:
-          key: path:${license_secret_path}
+          key: path:/teleport-demo/license/teleport-license
           version: latest_enabled

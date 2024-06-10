@@ -1,4 +1,6 @@
 
+# Retrieve cluster credentials and store them in local.kubeconfig
+
 data "scaleway_secret" "kubeconfig" {
   name = "teleport-kubernetes-kubeconfig"
   path = "/teleport-demo/kubernetes/kubeconfig"

@@ -1,4 +1,4 @@
-name: Deploy Scaleway instances demo
+name: "Scaleway instances demo: deploy"
 on:
   workflow_dispatch:
 #   push:

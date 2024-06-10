@@ -1,4 +1,4 @@
-name: Deploy Scaleway Kubernetes demo
+name: "Scaleway Kubernetes demo: deploy"
 on:
   workflow_dispatch:
 #   push:
@@ -95,9 +95,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v3
-
-      - name: Set up license file
-        run: echo "${{ secrets.LICENCE }}" | base64 --decode >license.pem
 
       - run: terraform init
 

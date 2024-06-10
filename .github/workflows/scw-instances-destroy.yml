@@ -1,4 +1,4 @@
-name: Destroy Scaleway instances demo
+name: "Scaleway instances demo: destroy"
 on:
   workflow_dispatch:
 

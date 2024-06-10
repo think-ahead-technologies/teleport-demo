@@ -46,7 +46,7 @@ provider "flux" {
     cluster_ca_certificate = base64decode(local.kubeconfig.cluster_ca_certificate)
   }
   git = {
-    url = "https://github.com/think-ahead-technologies/teleport-demo"
+    url = "https://github.com/${var.GITHUB_ORG}/${var.GITHUB_REPO}"
     http = {
       username = "git" # This can be any string when using a personal access token
       password = var.GITHUB_ACCESS_TOKEN

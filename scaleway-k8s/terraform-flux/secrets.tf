@@ -1,4 +1,7 @@
 
+# Deploy external-secrets chart, so its CRDs are available in
+#  time for `terraform plan` in the terraform-secrets stack.
+
 resource "helm_release" "external-secrets" {
   name      = "external-secrets"
   namespace = "kube-system"
@@ -11,3 +14,4 @@ resource "helm_release" "external-secrets" {
     value = "true"
   }
 }
+
