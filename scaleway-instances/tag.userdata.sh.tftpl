@@ -1,0 +1,21 @@
+#!/bin/bash -e
+
+# This script will be stored on the instance at: /var/lib/cloud/instance/user-data.txt
+# Logs of its execution can be found at: /var/log/cloud-init-output.log
+
+# Based on: https://goteleport.com/docs/access-controls/access-graph/self-hosted/
+
+apt update
+apt install docker.io -y
+
+while [ ! -s /etc/access-graph-teleport-host-ca.pem ]; do
+    curl -s 'https://${ teleport_dns }/webapi/auth/export?type=tls-host' | tee /etc/access-graph-teleport-host-ca.pem
+    sleep 1
+done
+
+docker run -p 50051:50051 --name teleport-access-graph \
+    -v /etc/tag-config.yaml:/app/config.yaml \
+    -v /etc/access-graph-tls.crt:/etc/access-graph-tls.crt \
+    -v /etc/access-graph-tls.key:/etc/access-graph-tls.key \
+    -v /etc/access-graph-teleport-host-ca.pem:/etc/access-graph-teleport-host-ca.pem \
+    public.ecr.aws/gravitational/access-graph:${ access_graph_image_tag }

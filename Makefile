@@ -8,8 +8,6 @@ deploy-force: deploy-init
 deploy-init:
 	cd $(DEMO_DIR) && terraform init
 
-redeploy-servers: destroy-deploy-force deploy-force
-
 destroy-deploy:
 	cd $(DEMO_DIR) && terraform destroy
 destroy-deploy-force:

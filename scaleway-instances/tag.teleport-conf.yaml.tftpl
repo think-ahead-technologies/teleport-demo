@@ -1,0 +1,25 @@
+backend:
+  postgres:
+    # This uses the PostgreSQL connection URI format, see https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS
+    # A stricter `sslmode` value is strongly recommended,
+    # e.g. `sslmode=verify-full&sslrootcert=/etc/access_graph/my_postgres_ca.crt`.
+    # For a full reference on possible parameters see https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
+    connection: ${ db_access_string }
+
+    # When running on Amazon RDS, IAM auth via credentials set in the environment can be used as follows:
+    # iam:
+    #   aws_region: us-west-2
+
+# IP address (optional) and port for the TAG service to listen to.
+# This is the default value. This key can be omitted to listen on port 50051 on all interfaces.
+address: ":50051"
+
+tls:
+  # File paths of PEM-encoded TLS certificate and private key for the TAG server.
+  cert: /etc/access-graph-tls.crt
+  key: /etc/access-graph-tls.key
+
+# This lists the file paths for host CAs of Teleport clusters that are allowed to register with this TAG service.
+# Several paths can be included to allow several Teleport clusters to connect to the TAG service.
+registration_cas:
+  - /etc/access-graph-teleport-host-ca.pem # A full path to the file containing the Teleport cluster's host CA certificate.

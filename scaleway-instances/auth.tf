@@ -34,7 +34,8 @@ resource "null_resource" "copy-teleport-conf-auth" {
 
   provisioner "file" {
     content = templatefile("auth.teleport-conf.yaml.tftpl", {
-      auth_server_ip  = scaleway_instance_server.teleport-auth-1.public_ip,
+      auth_server_ip  = scaleway_instance_server.teleport-auth-1.public_ip
+      tag_server_ip   = scaleway_instance_ip.temp_tag_ip_1.address
       proxy_server_ip = scaleway_instance_server.teleport-proxy-1.public_ip
     })
     destination = "/etc/teleport.yaml"
@@ -45,6 +46,11 @@ resource "null_resource" "copy-teleport-conf-auth" {
     destination = "/etc/teleport/license.pem"
   }
 
+  provisioner "file" {
+    content     = file("keys/ca.crt")
+    destination = "/etc/access_graph_ca.pem"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "while ! command -v tctl >/dev/null; do sleep 1; done",
@@ -52,7 +58,9 @@ resource "null_resource" "copy-teleport-conf-auth" {
       "while ! tctl status >/dev/null; do sleep 1; done",
       "tctl create /etc/teleport/github-repo-role.yaml",
       "tctl create /etc/teleport/bot.yaml",
-      "tctl create /etc/teleport/bot-token.yaml"
+      "tctl create /etc/teleport/bot-token.yaml",
+      # The purpose of the above is so GitHub Actions can apply the latter. Included here for convenience only.
+      "tctl create /etc/teleport/azure-connector.yaml"
     ]
   }
 }

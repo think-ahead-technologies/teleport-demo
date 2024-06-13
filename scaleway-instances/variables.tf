@@ -33,7 +33,28 @@ variable "TELEPORT_VERSION" {
   default = "15.3.6"
 }
 
+variable "ACCESS_GRAPH_VERSION" {
+  type    = string
+  default = "1.20.1"
+}
+
 variable "SSH_KEYFILE" {
   type    = string
   default = "~/.ssh/id_ed25519"
+}
+
+variable "ARM_TENANT_ID" {
+  type = string
+}
+
+variable "ARM_SUBSCRIPTION_ID" {
+  type = string
+}
+
+variable "ARM_CLIENT_ID" {
+  type = string
+}
+
+variable "ARM_CLIENT_SECRET" {
+  type = string
 }
