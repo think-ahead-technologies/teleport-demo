@@ -13,7 +13,7 @@ while [ ! -s /etc/access-graph-teleport-host-ca.pem ]; do
     sleep 1
 done
 
-docker run -p 50051:50051 --name teleport-access-graph \
+docker run -p 50051:50051 --name tag \
     -v /etc/tag-config.yaml:/app/config.yaml \
     -v /etc/access-graph-tls.crt:/etc/access-graph-tls.crt \
     -v /etc/access-graph-tls.key:/etc/access-graph-tls.key \

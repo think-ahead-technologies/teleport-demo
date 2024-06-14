@@ -11,11 +11,31 @@ resource "scaleway_instance_user_data" "auth" {
 }
 
 resource "scaleway_instance_server" "teleport-auth-1" {
-  type  = "DEV1-M"
+  type  = "DEV1-L"
   image = "ubuntu_jammy"
   name  = "scw-teleport-demo-auth"
   tags  = var.TAGS
   ip_id = scaleway_instance_ip.temp_auth_ip_1.id
+}
+
+data "scaleway_secret" "ca-cert" {
+  name = "cert"
+  path = "/teleport-demo/instances/ca"
+}
+
+data "scaleway_secret_version" "ca-cert" {
+  secret_id = data.scaleway_secret.ca-cert.id
+  revision  = "latest"
+}
+
+data "scaleway_secret" "license" {
+  name = "teleport-license"
+  path = "/teleport-demo/license"
+}
+
+data "scaleway_secret_version" "license" {
+  secret_id = data.scaleway_secret.license.id
+  revision  = "latest"
 }
 
 resource "null_resource" "copy-teleport-conf-auth" {
@@ -35,20 +55,20 @@ resource "null_resource" "copy-teleport-conf-auth" {
   provisioner "file" {
     content = templatefile("auth.teleport-conf.yaml.tftpl", {
       auth_server_ip  = scaleway_instance_server.teleport-auth-1.public_ip
-      tag_server_ip   = scaleway_instance_ip.temp_tag_ip_1.address
       proxy_server_ip = scaleway_instance_server.teleport-proxy-1.public_ip
+      tag_server_dns  = "${scaleway_domain_record.tag.name}.${scaleway_domain_record.tag.dns_zone}"
     })
     destination = "/etc/teleport.yaml"
   }
 
   provisioner "file" {
-    content     = file("license.pem")
+    content     = base64decode(data.scaleway_secret_version.license.data)
     destination = "/etc/teleport/license.pem"
   }
 
   provisioner "file" {
-    content     = file("keys/ca.crt")
-    destination = "/etc/access_graph_ca.pem"
+    content     = base64decode(data.scaleway_secret_version.ca-cert.data)
+    destination = "/etc/access_graph_ca.crt"
   }
 
   provisioner "remote-exec" {

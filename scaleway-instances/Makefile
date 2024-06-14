@@ -14,7 +14,7 @@ redeploy:
 
 ssh-auth ssh-proxy ssh-tag:
 ssh-%:
-	ssh -o UserKnownHostsFile=/dev/null root@$$(terraform output -raw $*-ip)
+	ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$$(terraform output -raw $*-ip)
 
 cert-gen:
 	./certgen.sh

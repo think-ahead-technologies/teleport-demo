@@ -18,11 +18,11 @@ auth_service:
   license_file: /etc/teleport/license.pem
   proxy_listener_mode: multiplex
 access_graph:
-  enabled: true
-  endpoint: ${tag_server_ip}:50051
+  enabled: true # enabled once TAG is up
+  endpoint: ${tag_server_dns}:50051
   # Specify a trusted CA we expect the TAG server certificate to be signed by.
   # If not specified, the system trust store will be used.
-  ca: /etc/access_graph_ca.pem
+  ca: /etc/access_graph_ca.crt
 ssh_service:
   listen_addr: ${auth_server_ip}:3022
   enabled: "yes"

@@ -2,7 +2,7 @@
 
 # This script will be stored on the instance at: /var/lib/cloud/instance/user-data.txt
 # Logs of its execution can be found at: /var/log/cloud-init-output.log
-# To debug Teleport, try running: journalctl -u teleport -e -n 1000 | less +F
+# To debug Teleport, try running: journalctl -u teleport -e -n 100 | less +F
 
 curl https://goteleport.com/static/install.sh | bash -s ${TELEPORT_VERSION} ${TELEPORT_EDITION}
 sudo teleport install systemd -o /etc/systemd/system/teleport.service
