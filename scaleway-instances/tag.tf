@@ -20,12 +20,16 @@ resource "scaleway_domain_record" "tag" {
 }
 
 resource "scaleway_instance_server" "teleport-tag-1" {
-  depends_on = [null_resource.copy-teleport-conf-auth, azurerm_postgresql_flexible_server_database.teleport]
-  type       = "DEV1-M"
-  image      = "ubuntu_jammy"
-  name       = "scw-teleport-demo-tag"
-  tags       = var.TAGS
-  ip_id      = scaleway_instance_ip.temp_tag_ip_1.id
+  depends_on = [
+    null_resource.copy-teleport-conf-auth,
+    azurerm_postgresql_flexible_server_database.teleport,
+    azurerm_postgresql_flexible_server_firewall_rule.teleport
+  ]
+  type  = "DEV1-M"
+  image = "ubuntu_jammy"
+  name  = "scw-teleport-demo-tag"
+  tags  = var.TAGS
+  ip_id = scaleway_instance_ip.temp_tag_ip_1.id
 }
 
 data "scaleway_secret" "tag-cert" {

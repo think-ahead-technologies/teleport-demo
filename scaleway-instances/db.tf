@@ -51,16 +51,10 @@ resource "azurerm_postgresql_flexible_server_database" "teleport" {
 resource "azurerm_postgresql_flexible_server_firewall_rule" "teleport" {
   name             = "allow-teleport-access"
   server_id        = azurerm_postgresql_flexible_server.teleport.id
-  start_ip_address = scaleway_instance_server.teleport-tag-1.public_ip
-  end_ip_address   = scaleway_instance_server.teleport-tag-1.public_ip
+  start_ip_address = scaleway_instance_ip.temp_tag_ip_1.address
+  end_ip_address   = scaleway_instance_ip.temp_tag_ip_1.address
 }
 
-resource "azurerm_postgresql_flexible_server_firewall_rule" "temp-user-access" {
-  name             = "allow-user-access-temporarily"
-  server_id        = azurerm_postgresql_flexible_server.teleport.id
-  start_ip_address = "46.114.219.181"
-  end_ip_address   = "46.114.219.181"
-}
 
 locals {
   database_hostname = "${azurerm_postgresql_flexible_server.teleport.name}.postgres.database.azure.com"
