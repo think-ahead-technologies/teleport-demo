@@ -1,0 +1,28 @@
+apiVersion: resources.teleport.dev/v2
+kind: TeleportSAMLConnector
+metadata:
+  name: ad
+  namespace: teleport
+# More info: https://github.com/gravitational/teleport/blob/0aa5285477d422e98bb72ccf42a4381e6fdce527/integrations/operator/apis/resources/v2/samlconnector_types.go
+spec:
+  # References public_addr from proxy conf.yaml.
+  acs: https://teleport.thinkahead.dev:443/v1/webapi/saml/acs/ad
+  attributes_to_roles:
+  - name: http://schemas.microsoft.com/ws/2008/06/identity/claims/groups
+    roles:
+    - editor
+    value: cc8931a2-3dba-4622-a6b8-1dcf0ae1ea12 # UUID of Entra ID group 'editor'
+  - name: http://schemas.microsoft.com/ws/2008/06/identity/claims/groups
+    roles:
+    - access
+    value: fa0bb52e-1e2b-40ac-baf5-7a218cd6eac7 # UUID of Entra ID group 'access'
+  # References public_addr from proxy conf.yaml.
+  audience: https://teleport.thinkahead.dev:443/v1/webapi/saml/acs/ad
+  cert: ""
+  display: Microsoft
+  entity_descriptor: ""
+
+  entity_descriptor_url: https://login.microsoftonline.com/6c7b523a-6d12-49cf-93cd-690f2e9d1e53/federationmetadata/2007-06/federationmetadata.xml?appid=aa8db296-4e4a-4c0d-8352-39755341e364
+  issuer: ""
+  service_provider_issuer: https://teleport.thinkahead.dev:443/v1/webapi/saml/acs/ad
+  sso: ""

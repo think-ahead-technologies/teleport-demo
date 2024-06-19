@@ -6,3 +6,4 @@ patches:
   - path: teleport-values.yaml
     target:
       kind: HelmRelease
+      name: teleport-cluster

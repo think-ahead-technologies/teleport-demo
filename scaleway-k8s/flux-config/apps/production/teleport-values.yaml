@@ -9,6 +9,7 @@ spec:
       version: "^15.0.0"
   values:
     # More info: https://github.dev/gravitational/teleport/blob/4160786a3e6fabd9b0dcd54354820b222a22535b/examples/chart/teleport-cluster/values.yaml
+    # Also: https://goteleport.com/docs/reference/helm-reference/teleport-cluster/
     clusterName: teleport.thinkahead.dev
     proxyProtocol: "off"
     proxyListenerMode: multiplex

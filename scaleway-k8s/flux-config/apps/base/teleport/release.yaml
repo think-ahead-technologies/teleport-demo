@@ -17,3 +17,5 @@ spec:
       retries: 3
   values:
     enterprise: true
+    operator:
+      enabled: true
