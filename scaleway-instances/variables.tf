@@ -30,7 +30,7 @@ variable "TELEPORT_EDITION" {
 
 variable "TELEPORT_VERSION" {
   type    = string
-  default = "15.3.6"
+  default = "16.0.1"
 }
 
 variable "ACCESS_GRAPH_VERSION" {
