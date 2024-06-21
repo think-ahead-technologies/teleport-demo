@@ -1,26 +1,67 @@
 name: "Scaleway instances demo: destroy"
 on:
   workflow_dispatch:
+    inputs:
+      retain-database:
+        description: 'Enter any value to RETAIN the database for the Teleport cluster:'
+        required: false
+        default: ''
 
 jobs:
-  Destroy:
+  destroy-database:
+    if: ${{ inputs.retain-database == '' }}
     runs-on: ubuntu-24.04
     env:
-        # For terraform provider access
+        # For terraform provider access to Scaleway bucket
         AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
-        # For terraform itself
+
+        # For terraform itself to access Scaleway
         TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
         TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+        TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+        TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
 
+        # For Azure
         TF_VAR_ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         TF_VAR_ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
+    defaults:
+      run:
+        working-directory: ./terraform-common/database
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Set up SSH private key
+        run: mkdir ~/.ssh && echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode >~/.ssh/id_ed25519
+
+      - run: terraform init
+
+      - run: terraform destroy -auto-approve
+
+  destroy-teleport:
+    runs-on: ubuntu-24.04
+    env:
+        # For terraform provider access to Scaleway bucket
+        AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+        # For terraform itself to access Scaleway
+        TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+        TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
         TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
         TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
-        S3_HOSTNAME: https://s3.fr-par.scw.cloud
+
+        # For Azure
+        TF_VAR_ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        TF_VAR_ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     defaults:
       run:
         working-directory: ./scaleway-instances

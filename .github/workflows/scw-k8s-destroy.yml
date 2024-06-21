@@ -9,12 +9,13 @@ jobs:
       # For terraform provider access
       AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
-      # For terraform itself
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
+      # For terraform itself to access Scaleway
       TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
       TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
 
-      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
-      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
     defaults:
       run:
         working-directory: ./scaleway-k8s/terraform-secrets
@@ -38,7 +39,7 @@ jobs:
       # For terraform provider access
       AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
-      # For terraform itself
+      # For terraform itself to access Scaleway
       TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
       TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
 
@@ -66,12 +67,13 @@ jobs:
       # For terraform provider access
       AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
-      # For terraform itself
+
+      # For terraform itself to access Scaleway
       TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
       TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
-
       TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
       TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
     defaults:
       run:
         working-directory: ./scaleway-k8s/terraform-cluster
