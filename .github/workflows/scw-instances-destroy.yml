@@ -32,14 +32,6 @@ jobs:
 
       - name: Set up SSH private key
         run: mkdir ~/.ssh && echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode >~/.ssh/id_ed25519
-      - name: Set up certificate for domain
-        run: echo "${{ secrets.DOMAIN_CERT }}" | base64 --decode >fullchain.pem
-      - name: Set up private key for domain
-        run: echo "${{ secrets.DOMAIN_KEY }}" | base64 --decode >privkey.pem
-      - name: Set up certificate for TLD
-        run: echo "${{ secrets.TLD_CERT }}" | base64 --decode >tld-fullchain.pem
-      - name: Set up private key for TLD
-        run: echo "${{ secrets.TLD_KEY }}" | base64 --decode >tld-privkey.pem
 
       - run: terraform init
 

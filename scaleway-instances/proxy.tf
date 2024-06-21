@@ -17,6 +17,26 @@ resource "scaleway_instance_server" "teleport-proxy-1" {
   ip_id = scaleway_instance_ip.public_ip_1.id
 }
 
+data "scaleway_secret" "proxy-key" {
+  name = "key"
+  path = "/teleport-demo/instances/domain"
+}
+
+data "scaleway_secret_version" "proxy-key" {
+  secret_id = data.scaleway_secret.proxy-key.id
+  revision  = "latest"
+}
+
+data "scaleway_secret" "proxy-certificate" {
+  name = "cert"
+  path = "/teleport-demo/instances/domain"
+}
+
+data "scaleway_secret_version" "proxy-certificate" {
+  secret_id = data.scaleway_secret.proxy-certificate.id
+  revision  = "latest"
+}
+
 resource "null_resource" "copy-teleport-conf-proxy" {
 
   connection {
@@ -35,23 +55,13 @@ resource "null_resource" "copy-teleport-conf-proxy" {
   }
 
   provisioner "file" {
-    content     = file("fullchain.pem")
+    content     = base64decode(data.scaleway_secret_version.proxy-certificate.data)
     destination = "/etc/teleport-letsencrypt-cert.pem"
   }
 
   provisioner "file" {
-    content     = file("privkey.pem")
+    content     = base64decode(data.scaleway_secret_version.proxy-key.data)
     destination = "/etc/teleport-letsencrypt-key.pem"
-  }
-
-  provisioner "file" {
-    content     = file("tld-fullchain.pem")
-    destination = "/etc/teleport-letsencrypt-cert-tld.pem"
-  }
-
-  provisioner "file" {
-    content     = file("tld-privkey.pem")
-    destination = "/etc/teleport-letsencrypt-key-tld.pem"
   }
 }
 
