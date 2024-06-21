@@ -1,6 +1,6 @@
 
 locals {
-    domain = "teleport.thinkahead.dev"
+  domain = "teleport.thinkahead.dev"
 }
 
 resource "scaleway_secret" "proxy-cert" {

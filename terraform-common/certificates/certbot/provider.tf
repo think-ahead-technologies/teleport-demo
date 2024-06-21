@@ -7,7 +7,7 @@ terraform {
 
   backend "s3" {
     bucket = "think-ahead-teleport-demo-terraform-state"
-    key    = "scaleway-instances-certificates-letsencrypt.tfstate"
+    key    = "common/certificates/certbot.tfstate"
     region = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"

@@ -16,5 +16,5 @@ variable "SCW_DEFAULT_ORGANISATION_ID" {
 }
 
 variable "LETSENCRYPT_DNS_CHALLENGE" {
-    type = string
+  type = string
 }

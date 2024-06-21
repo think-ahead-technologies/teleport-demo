@@ -7,7 +7,7 @@ terraform {
 
   backend "s3" {
     bucket = "think-ahead-teleport-demo-terraform-state"
-    key    = "prod.tfstate"
+    key    = "scaleway-instances/state.tfstate"
     region = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"

@@ -1,12 +1,13 @@
 
 
 redeploy:
-	-terraform taint scaleway_instance_server.teleport-proxy-1
-	-terraform taint scaleway_instance_server.teleport-auth-1
-	-terraform taint scaleway_instance_server.teleport-tag-1
 	terraform apply -auto-approve \
+		-replace=scaleway_instance_server.teleport-proxy-1 \
+		-replace=scaleway_instance_server.teleport-auth-1 \
+		-replace=scaleway_instance_server.teleport-tag-1
 		-replace=scaleway_instance_user_data.proxy \
 		-replace=scaleway_instance_user_data.auth \
+		-replace=scaleway_instance_user_data.tag \
 		-replace=null_resource.copy-teleport-conf-proxy \
 		-replace=null_resource.copy-teleport-conf-auth \
 		-replace=null_resource.copy-teleport-conf-tag \

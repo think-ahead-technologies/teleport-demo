@@ -76,11 +76,11 @@ resource "null_resource" "copy-teleport-conf-auth" {
       "while ! command -v tctl >/dev/null; do sleep 1; done",
       "while [ ! -s /var/lib/teleport/host_uuid ]; do sleep 1; done",
       "while ! tctl status >/dev/null; do sleep 1; done",
-      "tctl create /etc/teleport/github-repo-role.yaml",
-      "tctl create /etc/teleport/bot.yaml",
-      "tctl create /etc/teleport/bot-token.yaml",
+      "tctl create -f /etc/teleport/github-repo-role.yaml",
+      "tctl create -f /etc/teleport/bot.yaml",
+      "tctl create -f /etc/teleport/bot-token.yaml",
       # The purpose of the above is so GitHub Actions can apply the latter. Included here for convenience only.
-      "tctl create /etc/teleport/azure-connector.yaml"
+      "tctl create -f /etc/teleport/azure-connector.yaml"
     ]
   }
 }

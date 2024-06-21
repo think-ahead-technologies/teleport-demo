@@ -16,6 +16,6 @@ variable "SCW_DEFAULT_ORGANISATION_ID" {
 }
 
 variable "DOMAIN" {
-    type = string
-    default = "teleport.thinkahead.dev"
+  type    = string
+  default = "teleport.thinkahead.dev"
 }

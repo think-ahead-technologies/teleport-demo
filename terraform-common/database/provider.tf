@@ -7,7 +7,7 @@ terraform {
 
   backend "s3" {
     bucket = "think-ahead-teleport-demo-terraform-state"
-    key    = "common/certificates/letsencrypt.tfstate"
+    key    = "common/database.tfstate"
     region = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"
@@ -27,3 +27,13 @@ provider "scaleway" {
   zone       = "fr-par-2"
   region     = "fr-par"
 }
+
+provider "azurerm" {
+  features {}
+
+  client_id       = var.ARM_CLIENT_ID
+  client_secret   = var.ARM_CLIENT_SECRET
+  tenant_id       = var.ARM_TENANT_ID
+  subscription_id = var.ARM_SUBSCRIPTION_ID
+}
+
