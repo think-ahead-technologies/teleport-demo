@@ -2,3 +2,5 @@
 *.key
 *.srl
 *.csr
+certbot/letsencrypt/*
+!certbot/letsencrypt/*.tf

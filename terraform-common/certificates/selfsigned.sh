@@ -1,5 +1,8 @@
 #!/usr/bin/env bash -e
 
+# This script generates a self-signed root CA plus
+#  subordinate certificates for the Teleport Access Graph
+
 # NB 'step' (Smallstep) provides an alternative, simpler approach to certificate generation.
 
 CA_NAME=ca

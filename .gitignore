@@ -3,7 +3,6 @@ tbot-data
 terraform-identity
 *.pem
 *.tfstate*
-letsencrypt/
 *.tfplan
 *.tmp
 kubeconfig*.yaml
