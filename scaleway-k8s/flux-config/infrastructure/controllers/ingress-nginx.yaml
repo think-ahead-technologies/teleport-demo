@@ -8,6 +8,25 @@ spec:
   interval: 24h
   url: https://kubernetes.github.io/ingress-nginx
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+    name: ingress-nginx-values
+    namespace: kube-system
+spec:
+    refreshInterval: 20s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: secret-store
+    target:
+        name: ingress-nginx-values
+        creationPolicy: Owner
+    data:
+      - secretKey: controller.service.loadBalancerIP
+        remoteRef:
+          key: path:/teleport-demo/kubernetes/lb-ip
+          version: latest_enabled
+---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -29,6 +48,12 @@ spec:
       config:
         use-proxy-protocol: true
       service:
+        # loadBalancerIP: # loaded from terraform via ExternalSecret as below
         annotations:
           service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: true
         externalTrafficPolicy: Local
+  valuesFrom:
+    - kind: Secret
+      name: ingress-nginx-values
+      valuesKey: controller.service.loadBalancerIP
+      targetPath: controller.service.loadBalancerIP
