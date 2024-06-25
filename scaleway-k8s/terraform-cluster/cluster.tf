@@ -8,6 +8,7 @@ resource "scaleway_k8s_cluster" "teleport" {
 }
 
 resource "scaleway_k8s_pool" "teleport" {
+  depends_on = [scaleway_lb_ip.teleport] # to ensure the IP isn't destroyed too early
   cluster_id = scaleway_k8s_cluster.teleport.id
   name       = "teleport"
   node_type  = "DEV1-M"

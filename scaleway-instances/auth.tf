@@ -20,7 +20,7 @@ resource "scaleway_instance_server" "teleport-auth-1" {
 
 data "scaleway_secret" "ca-cert" {
   name = "cert"
-  path = "/teleport-demo/instances/ca"
+  path = "/teleport-demo/certificates/ca"
 }
 
 data "scaleway_secret_version" "ca-cert" {

@@ -35,3 +35,15 @@ resource "kubernetes_secret" "scaleway-credentials-cert-manager" {
     SCW_PROJECT_ID = var.SCW_DEFAULT_PROJECT_ID
   }
 }
+
+resource "scaleway_secret" "cluster-host-ca" {
+  name        = "kubernetes"
+  path        = "/teleport-demo/certificates/cluster-host-ca"
+  description = "Host CA certificate retrieved from currently running Kubernetes cluster"
+}
+
+resource "null_resource" "retrieve-cluster-host-ca-to-secret" {
+  provisioner "local-exec" {
+    command = "./get-cluster-host-ca.sh teleport.thinkahead.dev ${scaleway_secret.cluster-host-ca.id} ${var.SCW_REGION}"
+  }
+}

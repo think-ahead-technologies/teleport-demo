@@ -33,7 +33,7 @@ resource "scaleway_instance_server" "teleport-tag-1" {
 
 data "scaleway_secret" "tag-cert" {
   name = "cert"
-  path = "/teleport-demo/instances/tag"
+  path = "/teleport-demo/certificates/tag"
 }
 
 data "scaleway_secret_version" "tag-cert" {
@@ -43,7 +43,7 @@ data "scaleway_secret_version" "tag-cert" {
 
 data "scaleway_secret" "tag-key" {
   name = "key"
-  path = "/teleport-demo/instances/tag"
+  path = "/teleport-demo/certificates/tag"
 }
 
 data "scaleway_secret_version" "tag-key" {

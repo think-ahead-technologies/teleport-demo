@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: teleport-access-graph
+  namespace: teleport-access-graph
+spec:
+  values:
+
+    postgres:
+      secretName: "teleport-access-graph-postgres"
+
+    tls:
+      # You may need to change this value if using cert-manager or other means
+      # to provision TLS certificates for your Kubernetes workloads.
+      existingSecretName: "teleport-access-graph-tls"
+
+    # clusterHostCAs: # This will be filled in by Helm from a secret.

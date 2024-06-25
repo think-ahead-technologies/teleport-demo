@@ -1,7 +1,7 @@
 
 resource "scaleway_secret" "tag-cert" {
   name        = "cert"
-  path        = "/teleport-demo/instances/tag"
+  path        = "/teleport-demo/certificates/tag"
   description = "Teleport Access Graph certificate, with SANs for instance-based and Kubernetes-based deployments"
 }
 
@@ -15,7 +15,7 @@ resource "scaleway_secret_version" "tag-cert" {
 
 resource "scaleway_secret" "tag-key" {
   name        = "key"
-  path        = "/teleport-demo/instances/tag"
+  path        = "/teleport-demo/certificates/tag"
   description = "Teleport Access Graph private key"
 }
 

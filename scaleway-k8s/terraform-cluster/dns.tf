@@ -15,9 +15,13 @@ resource "scaleway_secret" "kubernetes-cluster-ip" {
 
 resource "scaleway_secret_version" "kubernetes-cluster-ip" {
   secret_id = scaleway_secret.kubernetes-cluster-ip.id
-  data = scaleway_lb_ip.teleport.ip_address
+  data      = scaleway_lb_ip.teleport.ip_address
 }
 
 output "fixed-lb-ip" {
-    value = scaleway_lb_ip.teleport.ip_address
+  value = scaleway_lb_ip.teleport.ip_address
+}
+
+output "pool-node-ip" {
+  value = scaleway_k8s_pool.teleport.nodes[0].public_ip
 }

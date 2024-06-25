@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: teleport-access-graph
+  labels:
+      pod-security.kubernetes.io/enforce: baseline
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+    name: teleport-teleport-access-graph-postgres
+    namespace: teleport-access-graph
+spec:
+    refreshInterval: 20s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: secret-store
+    target:
+        name: teleport-access-graph-postgres
+        creationPolicy: Owner
+    data:
+      - secretKey: uri
+        remoteRef:
+          key: path:/teleport-demo/database/credentials
+          property: access_string
+          version: latest_enabled
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+    name: teleport-access-graph-tls
+    namespace: teleport-access-graph
+spec:
+    refreshInterval: 20s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: secret-store
+    target:
+        name: teleport-access-graph-tls
+        creationPolicy: Owner
+    data:
+      - secretKey: tls.crt
+        remoteRef:
+          key: path:/teleport-demo/certificates/tag/cert
+          version: latest_enabled
+      - secretKey: tls.key
+        remoteRef:
+          key: path:/teleport-demo/certificates/tag/key
+          version: latest_enabled
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+    name: teleport-access-graph-host-ca
+    namespace: teleport-access-graph
+spec:
+    refreshInterval: 20s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: secret-store
+    target:
+        name: teleport-access-graph-host-ca
+        creationPolicy: Owner
+    data:
+      - secretKey: certificate
+        remoteRef:
+          key: path:/teleport-demo/certificates/cluster-host-ca/kubernetes
+          version: latest_enabled
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: teleport
+  namespace: teleport-access-graph
+spec:
+  interval: 5m
+  url: https://charts.releases.teleport.dev
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: teleport-access-graph
+  namespace: teleport-access-graph
+spec:
+  releaseName: teleport-access-graph
+  chart:
+    spec:
+      chart: teleport-access-graph
+      sourceRef:
+        kind: HelmRepository
+        name: teleport
+  interval: 50m
+  install:
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: teleport-access-graph-host-ca
+      valuesKey: certificate
+      targetPath: clusterHostCAs[0]
+  # values loaded from ./tag-values.yaml

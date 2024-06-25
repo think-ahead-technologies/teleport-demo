@@ -19,7 +19,7 @@ resource "scaleway_instance_server" "teleport-proxy-1" {
 
 data "scaleway_secret" "proxy-key" {
   name = "key"
-  path = "/teleport-demo/instances/domain"
+  path = "/teleport-demo/certificates/proxy"
 }
 
 data "scaleway_secret_version" "proxy-key" {
@@ -29,7 +29,7 @@ data "scaleway_secret_version" "proxy-key" {
 
 data "scaleway_secret" "proxy-certificate" {
   name = "cert"
-  path = "/teleport-demo/instances/domain"
+  path = "/teleport-demo/certificates/proxy"
 }
 
 data "scaleway_secret_version" "proxy-certificate" {

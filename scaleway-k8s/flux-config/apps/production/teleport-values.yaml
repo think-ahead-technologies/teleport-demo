@@ -30,3 +30,22 @@ spec:
       ingress:
         nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         external-dns.alpha.kubernetes.io/hostname: teleport.thinkahead.dev
+    auth:
+      teleportConfig:
+        # Add a section for configuring the Teleport Access Graph connection.
+        access_graph:
+          enabled: true
+          endpoint: teleport-access-graph.teleport-access-graph.svc.cluster.local:443
+          # Omit the `ca` key if your Teleport cluster already trusts the issuing CA.
+          ca: /var/run/access-graph/ca.pem
+
+    # Provide the TAG CA to the Teleport Auth Service as a volume.
+    # Omit all of the below if your Teleport cluster already trusts the issuing CA.
+    extraVolumes:
+      - name: tag-ca
+        secret:
+          secretName: teleport-access-graph-ca
+
+    extraVolumeMounts:
+      - name: tag-ca
+        mountPath: /var/run/access-graph

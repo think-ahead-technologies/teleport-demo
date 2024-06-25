@@ -1,7 +1,7 @@
 
 resource "scaleway_secret" "ca-cert-gen" {
   name        = "cert"
-  path        = "/teleport-demo/instances/ca"
+  path        = "/teleport-demo/certificates/ca"
   description = "Certificate Authority cert"
 }
 
@@ -15,7 +15,7 @@ resource "scaleway_secret_version" "ca-cert-gen" {
 
 resource "scaleway_secret" "ca-key-gen" {
   name        = "key"
-  path        = "/teleport-demo/instances/ca"
+  path        = "/teleport-demo/certificates/ca"
   description = "Certificate Authority cert"
 }
 
