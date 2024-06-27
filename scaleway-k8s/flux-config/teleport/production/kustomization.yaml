@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - saml.yaml
   - access-role.yaml
+  - db-service-role.yaml
   - tag.yaml
 patches:
   - path: tag-values.yaml

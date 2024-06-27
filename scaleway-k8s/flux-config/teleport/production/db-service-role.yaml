@@ -1,0 +1,17 @@
+apiVersion: resources.teleport.dev/v1
+kind: TeleportRoleV7
+metadata:
+  name: azure-database-access
+  namespace: teleport
+spec:
+  allow:
+    db_labels:
+      'engine':
+        - "Microsoft.DBforMySQL/servers"
+        - "Microsoft.DBforMySQL/flexibleServers"
+        - "Microsoft.DBforPostgreSQL/servers"
+        - "Microsoft.DBforPostgreSQL/flexibleServers"
+    db_names:
+    - '*'
+    db_users:
+    - teleport
