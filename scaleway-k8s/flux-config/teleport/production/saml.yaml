@@ -15,6 +15,7 @@ spec:
   - name: http://schemas.microsoft.com/ws/2008/06/identity/claims/groups
     roles:
     - access
+    - access-k8s
     value: fa0bb52e-1e2b-40ac-baf5-7a218cd6eac7 # UUID of Entra ID group 'access'
   # References public_addr from proxy conf.yaml.
   audience: https://teleport.thinkahead.dev:443/v1/webapi/saml/acs/ad
