@@ -12,12 +12,13 @@ MAX_ATTEMPTS=600
 SCALEWAY_REGION=fr-par
 
 url=https://$domain/webapi/auth/export?type=tls-host
+echo "Waiting to retrieve host CA certificate from: $url"
 
 attempts=0
 
 cert=
 while [ -z "$cert" ]; do
-    cert=$(curl $url 2>/dev/null)
+    cert=$(curl "$url" 2>/dev/null || true)
     attempts=$(( $attempts + 1 ))
     if [ $attempts -gt $MAX_ATTEMPTS ]; then
         echo "Error: timed out after $MAX_ATTEMPTS attempts" >&2
