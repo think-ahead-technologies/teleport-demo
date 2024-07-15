@@ -1,0 +1,31 @@
+#!/bin/bash -x
+
+# This script will be stored on the instance at: /var/lib/cloud/instance/user-data.txt
+# Logs of its execution can be found at: /var/log/cloud-init-output.log
+# To debug Teleport, try running: journalctl -u teleport -e -n 100
+
+apt update
+apt install jq -y
+
+TELEPORT_DOMAIN=${TELEPORT_DOMAIN}
+TELEPORT_VERSION="$(curl https://$TELEPORT_DOMAIN/v1/webapi/ping | jq -r '.server_version')"
+
+curl https://goteleport.com/static/install.sh | bash -s $TELEPORT_VERSION enterprise
+
+# NB this token is generated locally with:
+# tsh login --proxy=teleport.thinkahead.dev
+# tctl tokens add --type=db --format=text >db-invite.tok
+echo "${TELEPORT_DB_INVITE_TOKEN}" >/etc/db-invite.tok
+echo "${TELEPORT_INVITE_TOKEN}" >/etc/node-invite.tok
+
+# Add configuration for this machine to run as the Azure database service.
+# NB the database region format is found here:
+# https://github.com/claranet/terraform-azurerm-regions/blob/master/regions.tf
+sudo teleport db configure create \
+  -o file:///etc/teleport.yaml \
+  --proxy=$TELEPORT_DOMAIN:443 \
+  --token=/etc/db-invite.tok \
+  --azure-postgres-discovery=northeurope
+
+systemctl enable teleport
+systemctl start teleport

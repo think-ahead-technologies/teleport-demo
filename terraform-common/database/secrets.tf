@@ -23,9 +23,13 @@ resource "scaleway_secret_version" "db-credentials" {
   secret_id = scaleway_secret.db-credentials.id
   data = jsonencode({
     server_id     = azurerm_postgresql_flexible_server.teleport.id
+    name          = azurerm_postgresql_flexible_server.teleport.name
     hostname      = "${azurerm_postgresql_flexible_server.teleport.name}.postgres.database.azure.com"
-    username      = "psqladmin"
+    admin_user    = "psqladmin"
+    database      = azurerm_postgresql_flexible_server_database.teleport.name
     password      = base64decode(data.scaleway_secret_version.db-admin-password.data)
     access_string = local.db_access_string
+    ad_group_id   = azurerm_postgresql_flexible_server_active_directory_administrator.teleport.object_id
+    ad_group_name = azurerm_postgresql_flexible_server_active_directory_administrator.teleport.principal_name
   })
 }

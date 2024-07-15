@@ -15,32 +15,9 @@ variable "SCW_DEFAULT_ORGANISATION_ID" {
   type = string
 }
 
-variable "TAGS" {
-  type = list(string)
-  default = [
-    "terraform-managed",
-    "teleport-demo"
-  ]
-}
-
-variable "TELEPORT_EDITION" {
+variable "SCW_REGION" {
   type    = string
-  default = "enterprise"
-}
-
-variable "TELEPORT_VERSION" {
-  type    = string
-  default = "16.1.0"
-}
-
-variable "ACCESS_GRAPH_VERSION" {
-  type    = string
-  default = "1.20.1"
-}
-
-variable "SSH_KEYFILE" {
-  type    = string
-  default = "~/.ssh/id_ed25519"
+  default = "fr-par"
 }
 
 variable "ARM_TENANT_ID" {

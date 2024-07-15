@@ -1,14 +1,15 @@
 
 resource "scaleway_k8s_cluster" "teleport" {
-  name                        = "teleport"
-  version                     = "1.29.1"
-  cni                         = "cilium"
-  private_network_id          = scaleway_vpc_private_network.teleport.id
+  depends_on         = [scaleway_lb_ip.teleport] # to ensure the IP isn't destroyed too early
+  name               = "teleport"
+  version            = "1.29.1"
+  cni                = "cilium"
+  private_network_id = scaleway_vpc_private_network.teleport.id
+
   delete_additional_resources = true
 }
 
 resource "scaleway_k8s_pool" "teleport" {
-  depends_on = [scaleway_lb_ip.teleport] # to ensure the IP isn't destroyed too early
   cluster_id = scaleway_k8s_cluster.teleport.id
   name       = "teleport"
   node_type  = "DEV1-M"

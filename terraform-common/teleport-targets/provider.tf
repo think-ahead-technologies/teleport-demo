@@ -7,7 +7,7 @@ terraform {
 
   backend "s3" {
     bucket = "think-ahead-teleport-demo-terraform-state"
-    key    = "common/database.tfstate"
+    key    = "common/teleport-resources.tfstate"
     region = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"
@@ -17,7 +17,7 @@ terraform {
     skip_requesting_account_id  = true
   }
 
-  required_version = ">= 1.6.1"
+  required_version = ">= 1.7.0"
 }
 
 provider "scaleway" {
@@ -29,7 +29,11 @@ provider "scaleway" {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 
   client_id       = var.ARM_CLIENT_ID
   client_secret   = var.ARM_CLIENT_SECRET

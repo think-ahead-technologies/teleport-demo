@@ -6,7 +6,7 @@ on:
 #       - main
 
 jobs:
-  Deploy-DB:
+  deploy-database:
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access to Scaleway bucket
@@ -44,9 +44,9 @@ jobs:
 
       - run: terraform apply plan.tfplan
 
-  Deploy-Cluster:
+  deploy-cluster:
     runs-on: ubuntu-24.04
-    needs: [Deploy-DB]
+    needs: [deploy-database]
     env:
       # For terraform provider access to Scaleway bucket
       AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
@@ -83,8 +83,8 @@ jobs:
 
       - run: terraform apply plan.tfplan
 
-  Deploy-Flux:
-    needs: [Deploy-Cluster]
+  deploy-flux:
+    needs: [deploy-cluster]
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access
@@ -119,8 +119,8 @@ jobs:
 
       - run: terraform apply plan.tfplan
 
-  Deploy-Secrets:
-    needs: [Deploy-Flux]
+  deploy-secrets:
+    needs: [deploy-flux]
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access
@@ -141,6 +141,75 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init
+
+      - run: terraform validate
+
+      - run: terraform fmt -recursive -check
+
+      - run: terraform plan -out=plan.tfplan
+
+      - run: terraform apply plan.tfplan
+
+  deploy-extra-resources:
+    needs: [deploy-secrets]
+    runs-on: ubuntu-24.04
+    permissions:
+        # The "id-token: write" permission is required or Machine ID will not be
+        # able to authenticate with the cluster.
+        id-token: write
+        contents: read
+    env:
+      # For terraform provider access to Scaleway bucket
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+      # For terraform itself to access Scaleway
+      TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+      TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+      TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+      TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
+      # For Azure
+      TF_VAR_ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      TF_VAR_ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      TELEPORT_PROXY_ADDR: teleport.thinkahead.dev:443
+
+    defaults:
+      run:
+        working-directory: ./terraform-common/teleport-targets/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+        # https://github.com/teleport-actions/setup
+      - name: Set up teleport
+        uses: teleport-actions/setup@v1
+        with:
+          version: 15.3.7
+
+      - name: Fetch credentials using Machine ID [NB if this fails, check /terraform-common/teleport-targets/README.md]
+        id: auth
+        uses: teleport-actions/auth@v2
+        with:
+          # Use the address of the auth/proxy server for your own cluster.
+          proxy: ${{ env.TELEPORT_PROXY_ADDR }}
+          # Use the name of the join token resource you created in step 1.
+          token: bot-teleport-demo-repo-token
+          # Specify the length of time that the generated credentials should be
+          # valid for. This is optional and defaults to "1h"
+          certificate-ttl: 1h
+
+      - run: make tokens
+
+      - name: generate disposable ssh key
+        run: ssh-keygen -t rsa -b 4096 -N "" -C "Disposable CI pipeline key" -f ~/.ssh/id_rsa
 
       - run: terraform init
 

@@ -17,6 +17,23 @@ resource "azurerm_postgresql_flexible_server" "teleport" {
   administrator_login          = "psqladmin"
   administrator_password       = base64decode(data.scaleway_secret_version.db-admin-password.data)
   version                      = "12"
+
+  authentication {
+    active_directory_auth_enabled = true
+    tenant_id                     = var.ARM_TENANT_ID
+  }
+}
+
+data "azurerm_client_config" "current" {}
+
+# Any Entra ID user within this group can do admin tasks on the database.
+resource "azurerm_postgresql_flexible_server_active_directory_administrator" "teleport" {
+  server_name         = azurerm_postgresql_flexible_server.teleport.name
+  resource_group_name = azurerm_resource_group.teleport.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  object_id           = "fa0bb52e-1e2b-40ac-baf5-7a218cd6eac7"
+  principal_name      = "access"
+  principal_type      = "Group"
 }
 
 resource "azurerm_postgresql_flexible_server_database" "teleport" {

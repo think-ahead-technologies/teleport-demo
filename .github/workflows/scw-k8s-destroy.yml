@@ -2,13 +2,17 @@ name: "Scaleway Kubernetes demo: destroy"
 on:
   workflow_dispatch:
     inputs:
-      retain-database:
-        description: 'Enter any value to RETAIN the database for the Teleport cluster:'
-        required: false
-        default: ''
+      database-action:
+        description: 'What would you like to do with the database for the Teleport cluster?'
+        required: true
+        type: choice
+        default: destroy
+        options:
+          - retain
+          - destroy
 
 jobs:
-  Destroy-Secrets:
+  destroy-secrets:
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access
@@ -37,8 +41,8 @@ jobs:
 
       - run: terraform destroy -auto-approve
 
-  Destroy-Flux:
-    needs: [ Destroy-Secrets ]
+  destroy-flux:
+    needs: [ destroy-secrets ]
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access
@@ -65,8 +69,46 @@ jobs:
 
       - run: terraform destroy -auto-approve
 
-  Destroy-Cluster:
-    needs: [ Destroy-Flux ]
+  destroy-target-resources:
+        runs-on: ubuntu-24.04
+        env:
+            # For terraform provider access to Scaleway bucket
+            AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
+
+            # For terraform itself to access Scaleway
+            TF_VAR_SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+            TF_VAR_SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+            TF_VAR_SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+            TF_VAR_SCW_DEFAULT_ORGANISATION_ID: ${{ secrets.SCW_ORGANISATION_ID }}
+
+            # For Azure
+            TF_VAR_ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            TF_VAR_ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+            TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+        defaults:
+          run:
+            working-directory: ./terraform-common/teleport-targets
+
+        steps:
+          - uses: actions/checkout@v4
+
+          - uses: hashicorp/setup-terraform@v3
+
+          - name: generate disposable ssh key
+            run: ssh-keygen -t rsa -b 4096 -N "" -C "Disposable CI pipeline key" -f ~/.ssh/id_rsa
+
+          - name: Create files that need to exist for Terraform
+            run: echo "sample" >node-invite.tok >db-invite.tok
+
+          - run: terraform init
+
+          - run: terraform destroy -auto-approve
+
+  destroy-cluster:
+    needs: [ destroy-flux, destroy-target-resources ]
     runs-on: ubuntu-24.04
     env:
       # For terraform provider access
@@ -100,8 +142,8 @@ jobs:
 
 
   destroy-database:
-        needs: [Destroy-Cluster]
-        if: ${{ inputs.retain-database == '' }}
+        needs: [destroy-cluster]
+        if: ${{ inputs.database-action == 'destroy' }}
         runs-on: ubuntu-24.04
         env:
             # For terraform provider access to Scaleway bucket

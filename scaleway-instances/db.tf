@@ -1,6 +1,6 @@
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "teleport" {
-  name             = "allow-teleport-access"
+  name             = "allow-teleport-access-graph"
   server_id        = local.db_credentials.server_id
   start_ip_address = scaleway_instance_ip.temp_tag_ip_1.address
   end_ip_address   = scaleway_instance_ip.temp_tag_ip_1.address
