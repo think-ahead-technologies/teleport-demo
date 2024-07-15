@@ -31,7 +31,7 @@ echo "Retrieved cluster host certificate. Pushing to Scaleway secret $secret_id.
 http_code=$(curl "https://api.scaleway.com/secret-manager/v1beta1/regions/$region/secrets/$secret_id/versions" \
   -s -o /dev/null -w "%{http_code}" \
   -H "X-Auth-Token: $TF_VAR_SCW_SECRET_KEY" \
-  -d "{\"data\":\"$(echo -n "$cert" | base64)\"}")
+  -d "{\"data\":\"$(echo -n "$cert" | base64 | tr -d '\n')\"}")
 
 if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
     echo "Failed to push secret: received HTTP $http_code" >&2
