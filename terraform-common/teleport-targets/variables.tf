@@ -1,3 +1,7 @@
+variable "TELEPORT_DOMAIN" {
+    type = string
+    default = "teleport.thinkahead.dev"
+}
 
 variable "SCW_ACCESS_KEY" {
   type = string

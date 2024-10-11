@@ -153,7 +153,13 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "current-machine-db-
 
 output "psql-create-role-script" {
   value = <<EOF
-        # Log into database using an Azure AD token. Use a user in the '${nonsensitive(local.db_credentials.ad_group_name)}' group as configured in the database stack.
+        # This script needs to be rerun each time the database is redeployed.
+        # Note that to run this, you will need to have your IP whitelisted - by running this stack locally
+        cd terraform/common
+        terraform init
+        terraform apply
+        tsh login --proxy=${var.TELEPORT_DOMAIN} --auth=ad
+        # Now log into database using an Azure AD token. Use a user in the '${nonsensitive(local.db_credentials.ad_group_name)}' group as configured in the database stack.
         az login
         export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
         psql "host=${nonsensitive(local.db_credentials.hostname)} user=${nonsensitive(local.db_credentials.ad_group_name)} dbname=postgres sslmode=require"
